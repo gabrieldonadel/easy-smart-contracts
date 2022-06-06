@@ -51,6 +51,9 @@
     "node": "16.14.2"
   },
   "devDependencies": {
+    "@types/craco__craco": "^6.4.0",
+    "@types/worker-plugin": "^5.0.1",
+    "raw-loader": "^4.0.2",
     "worker-plugin": "^5.0.1"
   }
 }
