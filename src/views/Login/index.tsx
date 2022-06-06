@@ -28,14 +28,19 @@ const Login = () => {
           justifyContent: "center",
           display: "flex",
           flexDirection: "column",
+          alignItems: "center",
         }}
       >
-        <h1>Easy Smart Contracts</h1>
-        <Icon />
-        <p>
-          Uma plataforma web low-code com enfoque em usabilidade que possibilite
-          a criação e implantação de contratos inteligentes na rede Ethereum
-        </p>
+        <div style={{ maxWidth: 400, margin: 20 }}>
+          <Icon height={100} width={100} />
+          <h1>Easy Smart Contracts</h1>
+          <p>
+            Uma plataforma web low-code com enfoque em usabilidade que
+            possibilita a criação e implantação de contratos inteligentes na
+            rede Ethereum
+          </p>
+          <button onClick={async () => {}}>test</button>
+        </div>
       </div>
       <div
         style={{
