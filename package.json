@@ -20,7 +20,8 @@
     "react-scripts": "4.0.3",
     "solc": "^0.8.7-fixed",
     "typescript": "^4.1.2",
-    "web-vitals": "^1.0.1"
+    "web-vitals": "^1.0.1",
+    "web3": "^1.7.3"
   },
   "scripts": {
     "start": "craco start",

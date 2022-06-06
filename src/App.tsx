@@ -4,6 +4,7 @@ import firebase from "firebase/compat/app";
 
 import Editor from "./views/Editor";
 import Login from "./views/Login";
+import Compiler from "./views/Compiler";
 import firebaseConfig from "./firebase-credentials.json";
 import AuthContext from "./context/AuthContext";
 
@@ -32,8 +33,9 @@ const App = () => {
   return (
     <AuthContext.Provider value={{ setUser, user }}>
       <Routes>
-      <Route path={"/editor"} element={<Editor />} />
-      <Route path="/login" element={<Login />} />
+        <Route path={"/editor"} element={<Editor />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/compiler" element={<Compiler />} />
       </Routes>
     </AuthContext.Provider>
   );
