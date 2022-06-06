@@ -18,5 +18,5 @@ code {
 }
 
 .fill-height {
-  height: calc(100vh - 114px);
+  flex: 1;
 }
