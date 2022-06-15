@@ -1,9 +1,9 @@
 import React from "react";
-import firebase from "firebase/compat/app";
+import { User } from "firebase/auth";
 
 export type AuthContextData = {
-  user: firebase.User;
-  setUser: (user: firebase.User) => void;
+  user: User;
+  setUser: (user: User) => void;
 };
 
 export const AuthContext = React.createContext<AuthContextData>({

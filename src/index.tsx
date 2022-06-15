@@ -2,9 +2,14 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 
+import "./firebase/config";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
+
+if ((window as any).ethereum) {
+  (window as any).ethereum.enable();
+}
 
 ReactDOM.render(
   <React.StrictMode>

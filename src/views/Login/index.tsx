@@ -1,16 +1,20 @@
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
-import firebase from "firebase/compat/app";
-import "firebase/compat/auth";
 
 import { ReactComponent as Icon } from "../../assets/images/smart-contact-icon.svg";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  GithubAuthProvider,
+  EmailAuthProvider,
+} from "firebase/auth";
 
 const uiConfig = {
   signInFlow: "popup",
   signInSuccessUrl: "/editor",
   signInOptions: [
-    firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-    firebase.auth.GithubAuthProvider.PROVIDER_ID,
-    firebase.auth.EmailAuthProvider.PROVIDER_ID,
+    GoogleAuthProvider.PROVIDER_ID,
+    GithubAuthProvider.PROVIDER_ID,
+    EmailAuthProvider.PROVIDER_ID,
   ],
 };
 
@@ -50,10 +54,7 @@ const Login = () => {
           flexDirection: "column",
         }}
       >
-        <StyledFirebaseAuth
-          uiConfig={uiConfig}
-          firebaseAuth={firebase.auth()}
-        />
+        <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={getAuth()} />
       </div>
     </div>
   );
