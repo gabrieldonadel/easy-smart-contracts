@@ -1,10 +1,17 @@
-import { addDoc, collection, getDocs, getFirestore } from "firebase/firestore/";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  getFirestore,
+} from "firebase/firestore/";
 
 import { FirebaseApp } from "./config";
 
 const firestoreDB = getFirestore(FirebaseApp);
 
-const dataPoint = <T>(collectionPath: string) => {
+const collectionDataPoint = <T>(collectionPath: string) => {
   const collectionRef = collection(
     firestoreDB,
     collectionPath
@@ -20,15 +27,33 @@ const dataPoint = <T>(collectionPath: string) => {
   };
 };
 
-interface UserContracts {
-  id: string;
+const docDataPoint = <T>(docPath: string) => {
+  const docRef = doc(firestoreDB, docPath).withConverter<T>({
+    toFirestore: (data: T) => data,
+    fromFirestore: (snap) => snap.data() as T,
+  });
+
+  return {
+    get: async () => getDoc(docRef),
+    docRef,
+  };
+};
+
+export const getGroceryList = (groceryListId) => {
+  const groceryDocRef = doc(firestoreDB, "groceryLists", groceryListId);
+  return getDoc(groceryDocRef);
+};
+
+export interface UserContracts {
   name: string;
   xml: string;
 }
 
 const db = {
   userContracts: (userId: string) =>
-    dataPoint<UserContracts>(`user/${userId}/contract`),
+    collectionDataPoint<UserContracts>(`user/${userId}/contract`),
+  userContract: (userId: string, contractId: string) =>
+    docDataPoint<UserContracts>(`user/${userId}/contract/${contractId}`),
 };
 
 export { db };
