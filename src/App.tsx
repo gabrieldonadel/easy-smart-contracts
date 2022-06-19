@@ -7,6 +7,7 @@ import Compiler from "./views/Compiler";
 import AuthContext from "./context/AuthContext";
 import Contracts from "./views/Contracts";
 import { getAuth, User } from "firebase/auth";
+import Drawer from "./views/Drawer";
 
 const App = () => {
   const [user, setUser] = useState<User>();
@@ -21,7 +22,7 @@ const App = () => {
         setInitializing(false);
       }
     );
-    return () => unregisterAuthObserver();
+    return unregisterAuthObserver;
   }, []);
 
   if (initializing) {
@@ -31,8 +32,15 @@ const App = () => {
   return (
     <AuthContext.Provider value={{ setUser, user }}>
       <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route element={<Drawer />}>
+          <Route path="/compiler" element={<Compiler />} />
+          <Route path={"/editor/:contractId"} element={<Editor />} />
+          <Route path="/contracts" element={<Contracts />} />
+          <Route path="/about" element={<Contracts />} />
+        </Route>
         <Route
-          path="/"
+          path="/*"
           element={
             user ? (
               <Navigate to="/contracts" replace={true} />
@@ -41,10 +49,6 @@ const App = () => {
             )
           }
         />
-        <Route path={"/editor"} element={<Editor />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/compiler" element={<Compiler />} />
-        <Route path="/contracts" element={<Contracts />} />
       </Routes>
     </AuthContext.Provider>
   );

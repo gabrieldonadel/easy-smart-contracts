@@ -43,7 +43,6 @@ const Login = () => {
             possibilita a criação e implantação de contratos inteligentes na
             rede Ethereum
           </p>
-          <button onClick={async () => {}}>test</button>
         </div>
       </div>
       <div
