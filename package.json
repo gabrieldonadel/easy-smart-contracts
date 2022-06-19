@@ -60,5 +60,9 @@
     "@types/worker-plugin": "^5.0.1",
     "raw-loader": "^4.0.2",
     "worker-plugin": "^5.0.1"
+  },
+  "resolutions": {
+    "//": "See https://github.com/facebook/create-react-app/issues/11773",
+    "react-error-overlay": "6.0.9"
   }
 }
