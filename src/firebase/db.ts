@@ -3,8 +3,10 @@ import {
   collection,
   doc,
   getDoc,
+  updateDoc,
   getDocs,
   getFirestore,
+  UpdateData,
 } from "firebase/firestore/";
 
 import { FirebaseApp } from "./config";
@@ -34,7 +36,8 @@ const docDataPoint = <T>(docPath: string) => {
   });
 
   return {
-    get: async () => getDoc(docRef),
+    get: async () => await getDoc(docRef),
+    update: async (data: UpdateData<T>) => await updateDoc(docRef, data),
     docRef,
   };
 };
