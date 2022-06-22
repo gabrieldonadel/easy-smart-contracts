@@ -139,7 +139,15 @@ const DrawerComponent = () => {
           </List>
         </Box>
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1 }}>
+      <Box
+        component="main"
+        sx={{
+          flex: 1,
+          minHeight: "100vh",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         <Toolbar />
         <Outlet />
       </Box>

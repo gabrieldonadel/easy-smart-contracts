@@ -1,71 +1,21 @@
-import React, { useEffect, useState } from "react";
-import Web3 from "web3";
-import { SimpleStorageContact } from "./contract";
+import React, { useState } from "react";
 
-const compileWithWorker = async (data: any) => {
-  return new Promise<string>((resolve, reject) => {
-    const worker = new Worker("./SolcJs.worker.ts", {
-      type: "module",
-    });
-    worker.postMessage(data);
-    worker.onmessage = function (event: any) {
-      resolve(event.data);
-    };
-    worker.onerror = reject;
-  });
-};
-
-// const web3 = new Web3("https://data-seed-prebsc-1-s2.binance.org:8545");
-const web3 = new Web3((window as any).ethereum);
-web3.eth.setProvider(Web3.givenProvider);
+import StorageContract from "../../contracts/Storage.sol";
+import { useDeployContract } from "../../hooks/useDeployContract";
+import { compileWithWorker } from "../../workers/utils";
 
 const CompilingSmartContractDemo: React.FC = () => {
   const [compileResult, setCompileResult] = useState<string>("");
   const [compiling, setCompiling] = useState(false);
-  const [account, setAccount] = useState(null);
-
-  const getData = async () => {
-    const network = await web3.eth.net.getNetworkType();
-    await (window as any).ethereum.enable();
-    const accounts = await web3.eth.getAccounts();
-    console.log("accounts", accounts);
-
-    setAccount(accounts?.[0]);
-
-    console.log("TCL: getData -> network", network);
-    console.log("TCL: getData -> accounts", accounts);
-  };
-
-  useEffect(() => {
-    getData();
-  }, []);
+  const { deploy } = useDeployContract();
 
   const handleCompile = async () => {
     setCompiling(true);
     const result = await compileWithWorker({
-      content: SimpleStorageContact,
+      content: StorageContract,
     });
-    const parsedResult = JSON.parse(result);
-    const { SimpleStorage } = (parsedResult as any).contracts["storage.sol"];
-    console.log("SimpleStorage", SimpleStorage);
+    await deploy({ result });
 
-    // 3. Create initial contract instance
-    const instance = new web3.eth.Contract(SimpleStorage.abi);
-    console.log("instance", instance);
-
-    try {
-      // 4. Deploy contract and get new deployed Instance
-      const deployedInstance = await instance
-        .deploy({ data: SimpleStorage.evm.bytecode.object })
-        .send({ from: account, gas: 150000 });
-
-      console.log("deployedInstance", deployedInstance);
-      // // Note: deployed address located at `deployedInstance._address`
-    } catch (error) {
-      console.log("error", error);
-    }
-
-    // contractInstance = deployedInstance;
     setCompileResult(result as string);
     setCompiling(false);
   };
@@ -84,7 +34,7 @@ const CompilingSmartContractDemo: React.FC = () => {
           <h3>SmartContract</h3>
           <div>
             <textarea
-              defaultValue={SimpleStorageContact}
+              defaultValue={StorageContract}
               style={{
                 width: "400px",
                 height: "300px",

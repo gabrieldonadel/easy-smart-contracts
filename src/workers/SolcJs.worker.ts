@@ -15,7 +15,7 @@ ctx.addEventListener("message", ({ data }) => {
 });
 
 function createCompileInput(
-  fileName = "storage.sol",
+  fileName = "contract.sol",
   fileContent: string
 ): string {
   const CompileInput = {
