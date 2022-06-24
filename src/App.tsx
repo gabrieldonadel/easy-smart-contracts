@@ -9,6 +9,8 @@ import AuthContext from "./context/AuthContext";
 import Contracts from "./views/Contracts";
 import { getAuth, User } from "firebase/auth";
 import Drawer from "./views/Drawer";
+import { Box, CircularProgress } from "@mui/material";
+import type {} from "@mui/lab/themeAugmentation";
 
 const App = () => {
   const [user, setUser] = useState<User>();
@@ -27,7 +29,19 @@ const App = () => {
   }, []);
 
   if (initializing) {
-    return <div>Loading</div>;
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          width: "100vw",
+          height: "100vh",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
   }
 
   return (
