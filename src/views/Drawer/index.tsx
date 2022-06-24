@@ -15,11 +15,14 @@ import {
   IconButton,
   Link as MuiLink,
 } from "@mui/material";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
-import GitHubIcon from "@mui/icons-material/GitHub";
-import ExitIcon from "@mui/icons-material/ExitToApp";
+import {
+  MoveToInbox as InboxIcon,
+  Mail as MailIcon,
+  GitHub as GitHubIcon,
+  ExitToApp as ExitIcon,
+} from "@mui/icons-material/";
 import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturing";
+import InfoIcon from "@mui/icons-material/Info";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { ReactComponent as Icon } from "../../assets/images/smart-contact-icon.svg";
 import { getAuth } from "firebase/auth";
@@ -58,7 +61,7 @@ const DrawerComponent = () => {
             Easy Smart Contracts
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: { xs: "none", md: "flex" } }}>
+          <Box sx={{ display: { md: "flex" } }}>
             <IconButton
               size="large"
               color="inherit"
@@ -112,7 +115,7 @@ const DrawerComponent = () => {
             <ListItem disablePadding>
               <ListItemButton>
                 <ListItemIcon>
-                  <MailIcon />
+                  <InfoIcon />
                 </ListItemIcon>
                 <ListItemText primary={"Sobre"} />
               </ListItemButton>
