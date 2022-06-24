@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
+import { SnackbarProvider } from "notistack";
 
 import Editor from "./views/Editor";
 import Login from "./views/Login";
@@ -30,27 +31,29 @@ const App = () => {
   }
 
   return (
-    <AuthContext.Provider value={{ setUser, user }}>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route element={<Drawer />}>
-          <Route path="/compiler" element={<Compiler />} />
-          <Route path={"/editor/:contractId"} element={<Editor />} />
-          <Route path="/contracts" element={<Contracts />} />
-          <Route path="/about" element={<Contracts />} />
-        </Route>
-        <Route
-          path="/*"
-          element={
-            user ? (
-              <Navigate to="/contracts" replace={true} />
-            ) : (
-              <Navigate to="/login" replace={true} />
-            )
-          }
-        />
-      </Routes>
-    </AuthContext.Provider>
+    <SnackbarProvider maxSnack={5}>
+      <AuthContext.Provider value={{ setUser, user }}>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route element={<Drawer />}>
+            <Route path="/compiler" element={<Compiler />} />
+            <Route path={"/editor/:contractId"} element={<Editor />} />
+            <Route path="/contracts" element={<Contracts />} />
+            <Route path="/about" element={<Contracts />} />
+          </Route>
+          <Route
+            path="/*"
+            element={
+              user ? (
+                <Navigate to="/contracts" replace={true} />
+              ) : (
+                <Navigate to="/login" replace={true} />
+              )
+            }
+          />
+        </Routes>
+      </AuthContext.Provider>
+    </SnackbarProvider>
   );
 };
 
