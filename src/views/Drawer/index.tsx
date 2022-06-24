@@ -102,14 +102,6 @@ const DrawerComponent = () => {
               </ListItemButton>
             </ListItem>
             <ListItem disablePadding>
-              <ListItemButton component={Link} to={"/editor"}>
-                <ListItemIcon>
-                  <InboxIcon />
-                </ListItemIcon>
-                <ListItemText primary={"Editor"} />
-              </ListItemButton>
-            </ListItem>
-            <ListItem disablePadding>
               <ListItemButton component={Link} to={"/compiler"}>
                 <ListItemIcon>
                   <PrecisionManufacturingIcon />

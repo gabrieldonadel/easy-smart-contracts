@@ -1,5 +1,3 @@
-import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
-
 import { ReactComponent as Icon } from "../../assets/images/smart-contact-icon.svg";
 import {
   getAuth,
@@ -7,6 +5,7 @@ import {
   GithubAuthProvider,
   EmailAuthProvider,
 } from "firebase/auth";
+import FirebaseUIAuth from "../../components/FirebaseUIAuth";
 
 const uiConfig = {
   signInFlow: "popup",
@@ -19,6 +18,9 @@ const uiConfig = {
 };
 
 const Login = () => {
+  const auth = getAuth();
+  auth.languageCode = "pt_br";
+
   return (
     <div
       style={{
@@ -53,7 +55,7 @@ const Login = () => {
           flexDirection: "column",
         }}
       >
-        <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={getAuth()} />
+        <FirebaseUIAuth config={uiConfig} />
       </div>
     </div>
   );
