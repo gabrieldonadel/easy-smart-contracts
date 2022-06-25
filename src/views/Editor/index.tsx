@@ -1,6 +1,13 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Box, CircularProgress, Drawer, Typography } from "@mui/material";
+import { CopyToClipboard } from "react-copy-to-clipboard";
+import {
+  Button,
+  Box,
+  CircularProgress,
+  Drawer,
+  Typography,
+} from "@mui/material";
 import { BlocklyWorkspace } from "react-blockly";
 import { BlocklyOptions } from "blockly";
 import { useSnackbar } from "notistack";
@@ -9,6 +16,7 @@ import {
   PrecisionManufacturing as PrecisionManufacturingIcon,
   RocketLaunch as RocketLaunchIcon,
   Code as CodeIcon,
+  ContentCopy as ContentCopyIcon,
 } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 
@@ -25,6 +33,15 @@ const workspaceConfiguration: BlocklyOptions = {
     length: 3,
     colour: "#ccc",
     snap: true,
+  },
+  zoom: {
+    controls: true,
+    wheel: true,
+    startScale: 1.0,
+    maxScale: 3,
+    minScale: 0.3,
+    scaleSpeed: 1.2,
+    pinch: true,
   },
 };
 
@@ -89,6 +106,17 @@ const Editor = () => {
     setDeployingContract(true);
     await deploy({ result: compiledContract });
     setDeployingContract(false);
+  };
+
+  const exportXML = () => {
+    const element = document.createElement("a");
+    const file = new Blob([contract.xml], {
+      type: "text/xml",
+    });
+    element.href = URL.createObjectURL(file);
+    element.download = `${contract.name}.xml`;
+    document.body.appendChild(element);
+    element.click();
   };
 
   useEffect(() => {
@@ -194,20 +222,37 @@ const Editor = () => {
             flex: 1,
             flexDirection: "column",
             display: "flex",
-            p: 5,
+            paddingBlock: 3,
+            paddingInline: 5,
           }}
         >
-          <Typography variant="h6" sx={{ fontWeight: "500" }}>
-            Código Solidity
-          </Typography>
+          <Box sx={{ display: "flex", marginBlock: 2 }}>
+            <Typography variant="h6" sx={{ fontWeight: "500", flex: 1 }}>
+              Código Solidity
+            </Typography>
+            <CopyToClipboard text={code}>
+              <Button variant="outlined" startIcon={<ContentCopyIcon />}>
+                Copiar
+              </Button>
+            </CopyToClipboard>
+          </Box>
           <textarea
             style={{ height: "200px", width: "100%" }}
             value={code}
             readOnly
           />
-          <Typography variant="h6" sx={{ fontWeight: "500" }}>
-            Blockly XML
-          </Typography>
+          <Box sx={{ display: "flex", marginBlock: 2 }}>
+            <Typography variant="h6" sx={{ fontWeight: "500", flex: 1 }}>
+              Blockly XML
+            </Typography>
+            <Button
+              variant="outlined"
+              onClick={exportXML}
+              startIcon={<CodeIcon />}
+            >
+              Exportar
+            </Button>
+          </Box>
           <textarea
             style={{ height: "200px", width: "100%" }}
             value={contract?.xml}
