@@ -4,6 +4,7 @@ import {
   doc,
   getDoc,
   updateDoc,
+  deleteDoc,
   getDocs,
   getFirestore,
   UpdateData,
@@ -36,8 +37,9 @@ const docDataPoint = <T>(docPath: string) => {
   });
 
   return {
-    get: async () => await getDoc(docRef),
-    update: async (data: UpdateData<T>) => await updateDoc(docRef, data),
+    get: async () => getDoc(docRef),
+    update: async (data: UpdateData<T>) => updateDoc(docRef, data),
+    delete: async () => deleteDoc(docRef),
     docRef,
   };
 };

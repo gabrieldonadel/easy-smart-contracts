@@ -1,26 +1,43 @@
 import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Fab,
   IconButton,
   List,
   ListItem,
   ListItemButton,
   ListItemText,
+  TextField,
   Typography,
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
+import { useSnackbar } from "notistack";
+import { LoadingButton } from "@mui/lab";
 
 import AuthContext from "../../context/AuthContext";
 import db from "../../firebase/db";
-import styles from "./styles.module.css";
+import { readFileAsText } from "../../utils";
 
 const Contracts = () => {
+  const { enqueueSnackbar } = useSnackbar();
   const { user } = useContext(AuthContext);
 
   const [contracts, setContracts] = useState<{ id: string; name: string }[]>(
     []
   );
+  const [deleteModalContractId, setDeleteModalContractId] = useState(undefined);
+  const [isDeletingContract, setIsDeletingContract] = useState(false);
+  const [isCreateContractModalOpen, setIsCreateContractModalOpen] =
+    useState(false);
+  const [isCreatingContract, setIsCreatingContract] = useState(false);
+
   useEffect(() => {
     db.userContracts(user?.uid)
       .get()
@@ -34,36 +51,75 @@ const Contracts = () => {
       });
   }, [user?.uid]);
 
-  const createExample = async () => {
-    const name = `Contract ${contracts.length + 1}`;
-    try {
-      const newContract = await db
-        .userContracts(user?.uid)
-        .add({ xml: "test", name });
+  const createContract = async (event) => {
+    event.preventDefault();
+    setIsCreatingContract(true);
+    let xml = "";
+    const name = event.target.name.value;
+    const xmlFile = event.target?.xmlFile?.files?.[0];
 
-      setContracts((prev) => [...prev, { id: newContract.id, name }]);
+    try {
+      if (xmlFile) {
+        xml = await readFileAsText(xmlFile);
+      }
+      const newContract = await db.userContracts(user?.uid).add({ xml, name });
+
+      setContracts((prev) => [{ id: newContract.id, name }, ...prev]);
     } catch (error) {
       console.log("error", error);
+    }
+    setIsCreatingContract(false);
+    event.target.reset();
+    closeCreateModal();
+  };
+
+  const closeCreateModal = () => {
+    setIsCreateContractModalOpen(false);
+  };
+
+  const closeDeleteModal = () => {
+    setDeleteModalContractId(undefined);
+  };
+
+  const deleteContract = async () => {
+    setIsDeletingContract(true);
+    try {
+      await db.userContract(user?.uid, deleteModalContractId).delete();
+      setContracts((prev) =>
+        prev.filter(({ id }) => id !== deleteModalContractId)
+      );
+      setIsDeletingContract(false);
+      closeDeleteModal();
+      enqueueSnackbar("Contrato deletado com sucesso", {
+        variant: "success",
+      });
+    } catch (error) {
+      console.log("error", error);
+      setIsDeletingContract(false);
     }
   };
 
   return (
-    <div className={styles.container}>
-      <Typography variant="body1">Lista de Contratos</Typography>
+    <Box sx={{ pt: 2 }}>
+      <Typography variant="h6" sx={{ pl: 2 }}>
+        Seus de Contratos
+      </Typography>
       <List>
         {contracts.map(({ id, name }) => (
           <ListItem
             key={id}
             secondaryAction={
-              <IconButton edge="end" aria-label="delete">
+              <IconButton
+                edge="end"
+                aria-label="delete"
+                onClick={() => setDeleteModalContractId(id)}
+              >
                 <DeleteIcon />
               </IconButton>
             }
             disablePadding
-            component={Link}
-            to={`/editor/${id}`}
           >
-            <ListItemButton role={undefined}>
+            <ListItemButton component={Link} to={`/editor/${id}`}>
               <ListItemText primary={name} secondary={id} />
             </ListItemButton>
           </ListItem>
@@ -72,12 +128,89 @@ const Contracts = () => {
       <Fab
         color="primary"
         aria-label="add"
-        onClick={createExample}
-        className={styles.addButton}
+        onClick={() => setIsCreateContractModalOpen(true)}
+        sx={{ position: "absolute", right: 24, bottom: 24 }}
       >
         <AddIcon />
       </Fab>
-    </div>
+      {/* Create Contract Dialog */}
+      <Dialog open={isCreateContractModalOpen} onClose={closeCreateModal}>
+        <DialogTitle>Criar projeto de contrato</DialogTitle>
+        <Box component="form" onSubmit={createContract}>
+          <DialogContent>
+            <DialogContentText>
+              Insira o nome do projeto que você deseja criar e opcionalmente
+              importe um contrato através de uma arquivo XML.
+            </DialogContentText>
+            <TextField
+              autoFocus
+              id="name"
+              label="Nome do projeto"
+              fullWidth
+              variant="outlined"
+              required
+              margin="normal"
+              name="name"
+            />
+            <Box>
+              <input
+                accept=".xml"
+                id="contained-button-file"
+                multiple
+                type="file"
+                name="xmlFile"
+                hidden
+              />
+              <label htmlFor="contained-button-file">
+                <Button component="span" sx={{ mt: 1 }} variant="outlined">
+                  Importar
+                </Button>
+              </label>
+              <input type="submit" id="submit-button" hidden />
+            </Box>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={closeCreateModal} disabled={isCreatingContract}>
+              Cancelar
+            </Button>
+            <label htmlFor="submit-button">
+              <LoadingButton loading={isCreatingContract} component="span">
+                Criar
+              </LoadingButton>
+            </label>
+          </DialogActions>
+        </Box>
+      </Dialog>
+      {/* Delete Contract Dialog */}
+      <Dialog
+        open={Boolean(deleteModalContractId)}
+        onClose={closeDeleteModal}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Você tem certeza que deseja deletar este contrato?"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Esta é uma ação irreversível e uma vez que o contrato for deletado
+            você perderá todos os dados atrelados a este contrato.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeDeleteModal} disabled={isDeletingContract}>
+            Cancelar
+          </Button>
+          <LoadingButton
+            onClick={deleteContract}
+            color="error"
+            loading={isDeletingContract}
+          >
+            Deletar
+          </LoadingButton>
+        </DialogActions>
+      </Dialog>
+    </Box>
   );
 };
 
