@@ -101,8 +101,8 @@ const Contracts = () => {
 
   return (
     <Box sx={{ pt: 2 }}>
-      <Typography variant="h6" sx={{ pl: 2 }}>
-        Seus de Contratos
+      <Typography variant="h5" sx={{ pl: 2, fontWeight: "500" }}>
+        Seus Projetos
       </Typography>
       <List>
         {contracts.map(({ id, name }) => (

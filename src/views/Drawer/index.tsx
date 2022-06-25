@@ -94,7 +94,7 @@ const DrawerComponent = () => {
                 <ListItemIcon>
                   <InboxIcon />
                 </ListItemIcon>
-                <ListItemText primary={"Contratos"} />
+                <ListItemText primary={"Projetos"} />
               </ListItemButton>
             </ListItem>
             <ListItem disablePadding>
