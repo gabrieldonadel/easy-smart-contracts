@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 import { SnackbarProvider } from "notistack";
+import { Box, CircularProgress } from "@mui/material";
+import type {} from "@mui/lab/themeAugmentation";
 
 import Editor from "./views/Editor";
 import Login from "./views/Login";
@@ -9,8 +11,8 @@ import AuthContext from "./context/AuthContext";
 import Contracts from "./views/Contracts";
 import { getAuth, User } from "firebase/auth";
 import Drawer from "./views/Drawer";
-import { Box, CircularProgress } from "@mui/material";
-import type {} from "@mui/lab/themeAugmentation";
+import About from "./views/About";
+import Examples from "./views/Examples";
 
 const App = () => {
   const [user, setUser] = useState<User>();
@@ -53,7 +55,8 @@ const App = () => {
             <Route path="/compiler" element={<Compiler />} />
             <Route path={"/editor/:contractId"} element={<Editor />} />
             <Route path="/contracts" element={<Contracts />} />
-            <Route path="/about" element={<Contracts />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/examples" element={<Examples />} />
           </Route>
           <Route
             path="/*"
