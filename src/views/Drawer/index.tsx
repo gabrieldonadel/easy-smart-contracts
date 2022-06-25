@@ -17,15 +17,16 @@ import {
 } from "@mui/material";
 import {
   MoveToInbox as InboxIcon,
-  Mail as MailIcon,
   GitHub as GitHubIcon,
+  FormatListNumbered as FormatListNumberedIcon,
   ExitToApp as ExitIcon,
 } from "@mui/icons-material/";
 import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturing";
 import InfoIcon from "@mui/icons-material/Info";
 import { Link, Outlet, useNavigate } from "react-router-dom";
-import { ReactComponent as Icon } from "../../assets/images/smart-contact-icon.svg";
 import { getAuth } from "firebase/auth";
+
+import { ReactComponent as Icon } from "../../assets/images/smart-contact-icon.svg";
 
 const drawerWidth = 240;
 
@@ -97,9 +98,9 @@ const DrawerComponent = () => {
               </ListItemButton>
             </ListItem>
             <ListItem disablePadding>
-              <ListItemButton>
+              <ListItemButton component={Link} to={"/examples"}>
                 <ListItemIcon>
-                  <MailIcon />
+                  <FormatListNumberedIcon />
                 </ListItemIcon>
                 <ListItemText primary={"Exemplos"} />
               </ListItemButton>
@@ -113,7 +114,7 @@ const DrawerComponent = () => {
               </ListItemButton>
             </ListItem>
             <ListItem disablePadding>
-              <ListItemButton>
+              <ListItemButton component={Link} to={"/about"}>
                 <ListItemIcon>
                   <InfoIcon />
                 </ListItemIcon>
