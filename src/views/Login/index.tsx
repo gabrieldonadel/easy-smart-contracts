@@ -6,6 +6,8 @@ import {
   EmailAuthProvider,
 } from "firebase/auth";
 import FirebaseUIAuth from "../../components/FirebaseUIAuth";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const uiConfig = {
   signInFlow: "popup",
@@ -18,8 +20,20 @@ const uiConfig = {
 };
 
 const Login = () => {
+  const navigate = useNavigate();
   const auth = getAuth();
   auth.languageCode = "pt_br";
+
+  useEffect(() => {
+    const unregisterAuthObserver = getAuth().onAuthStateChanged(
+      async (user) => {
+        if (user) {
+          navigate("/contracts", { replace: true });
+        }
+      }
+    );
+    return unregisterAuthObserver;
+  }, [navigate]);
 
   return (
     <div

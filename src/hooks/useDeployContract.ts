@@ -17,6 +17,10 @@ export const useDeployContract = () => {
   }, [loadAccounts]);
 
   const deploy = async ({ result }) => {
+    if (!account) {
+      await loadAccounts();
+    }
+
     const parsedResult = JSON.parse(result);
     const contract = (parsedResult as any).contracts["contract.sol"];
     const contractInstance: any = Object.values(contract)?.[0];
