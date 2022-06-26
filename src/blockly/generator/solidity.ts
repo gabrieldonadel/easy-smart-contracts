@@ -1,4 +1,4 @@
-import Blockly from "blockly";
+import Blockly, { Block } from "blockly";
 
 import { BlocklySolidityGenerator } from "./main";
 import "./contract";
@@ -6,6 +6,7 @@ import "./logic";
 import "./math";
 import "./methods";
 import "./variables";
+import "./procedures";
 
 import "../blocks/contract";
 
@@ -162,7 +163,7 @@ BlocklySolidityGenerator.scrubNakedValue = function (line) {
  * @private
  */
 //@ts-ignore
-BlocklySolidityGenerator.scrub_ = function (block, code) {
+BlocklySolidityGenerator.scrub_ = function (block: Block, code) {
   var commentCode = "";
   // Only collect comments for blocks that aren't inline.
   if (!block.outputConnection || !block.outputConnection.targetConnection) {

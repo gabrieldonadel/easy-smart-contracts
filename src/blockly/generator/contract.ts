@@ -54,7 +54,8 @@ BlocklySolidityGenerator["contract_state_get"] = function (block) {
     return "";
   }
 
-  return ["this." + getVariableName(variable), OperationOrder.ORDER_ATOMIC];
+  return [getVariableName(variable), OperationOrder.ORDER_ATOMIC];
+  // return ["this." + getVariableName(variable), OperationOrder.ORDER_ATOMIC];
 };
 
 BlocklySolidityGenerator["contract_state_set"] = function (block) {

@@ -5,7 +5,7 @@ export const toolbox: ToolboxDefinition = {
   contents: [
     {
       kind: "category",
-      name: "Logic",
+      name: "Lógica",
       colour: "#5C81A6",
       contents: [
         {
@@ -16,11 +16,23 @@ export const toolbox: ToolboxDefinition = {
           kind: "block",
           type: "logic_compare",
         },
+        {
+          kind: "block",
+          type: "logic_boolean",
+        },
+        {
+          kind: "block",
+          type: "logic_operation",
+        },
+        {
+          kind: "block",
+          type: "return",
+        },
       ],
     },
     {
       kind: "category",
-      name: "Math",
+      name: "Matemática",
       colour: "#5CA65C",
       contents: [
         {
@@ -35,8 +47,8 @@ export const toolbox: ToolboxDefinition = {
     },
     {
       kind: "category",
-      name: "Custom",
-      colour: "#5CA699",
+      name: "Contrato",
+      colour: "#03a9f4",
       contents: [
         {
           kind: "block",
@@ -76,22 +88,6 @@ export const toolbox: ToolboxDefinition = {
         },
         {
           kind: "block",
-          type: "math_number",
-        },
-        {
-          kind: "block",
-          type: "math_arithmetic",
-        },
-        {
-          kind: "block",
-          type: "logic_boolean",
-        },
-        {
-          kind: "block",
-          type: "logic_compare",
-        },
-        {
-          kind: "block",
           type: "controls_ifelse",
         },
         {
@@ -109,10 +105,6 @@ export const toolbox: ToolboxDefinition = {
         {
           kind: "block",
           type: "contract_method_parameter_get",
-        },
-        {
-          kind: "block",
-          type: "logic_operation",
         },
       ],
     },

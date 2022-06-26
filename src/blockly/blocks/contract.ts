@@ -530,3 +530,16 @@ Blockly.Blocks["controls_for"] = {
     Blockly.Extensions.apply("declare_typed_variable", this, false);
   },
 };
+
+Blockly.Blocks["return"] = {
+  init: function () {
+    this.appendValueInput("STATE_NAME").setCheck(null).appendField("return");
+    this.setInputsInline(false);
+    this.setPreviousStatement(true, null);
+    this.setColour(330);
+
+    this.getVariableNameSelectField = function () {
+      return this.getField("STATE_NAME");
+    };
+  },
+};
