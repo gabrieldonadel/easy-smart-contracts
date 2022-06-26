@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 
 const uiConfig = {
   signInFlow: "popup",
-  signInSuccessUrl: "/editor",
+  signInSuccessUrl: "/contracts",
   signInOptions: [
     GoogleAuthProvider.PROVIDER_ID,
     GithubAuthProvider.PROVIDER_ID,

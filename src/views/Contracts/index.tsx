@@ -120,7 +120,7 @@ const Contracts = () => {
             disablePadding
           >
             <ListItemButton component={Link} to={`/editor/${id}`}>
-              <ListItemText primary={name} secondary={id} />
+              <ListItemText primary={name} secondary={`Identificador: ${id}`} />
             </ListItemButton>
           </ListItem>
         ))}
