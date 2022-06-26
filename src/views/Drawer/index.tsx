@@ -113,14 +113,14 @@ const DrawerComponent = () => {
                 <ListItemText primary={"Compilador"} />
               </ListItemButton>
             </ListItem>
-            <ListItem disablePadding>
+            {/* <ListItem disablePadding>
               <ListItemButton component={Link} to={"/about"}>
                 <ListItemIcon>
                   <InfoIcon />
                 </ListItemIcon>
                 <ListItemText primary={"Sobre"} />
               </ListItemButton>
-            </ListItem>
+            </ListItem> */}
           </List>
           <Divider />
           <List>
