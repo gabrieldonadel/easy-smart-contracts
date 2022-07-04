@@ -22,7 +22,7 @@ import {
   ExitToApp as ExitIcon,
 } from "@mui/icons-material/";
 import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturing";
-import InfoIcon from "@mui/icons-material/Info";
+// import InfoIcon from "@mui/icons-material/Info";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { getAuth } from "firebase/auth";
 
@@ -57,7 +57,8 @@ const DrawerComponent = () => {
             variant="h5"
             noWrap
             component="div"
-            sx={{ marginLeft: 1, fontWeight: "500" }}
+            sx={{ marginLeft: 1, fontWeight: "500", cursor: "pointer" }}
+            onClick={() => navigate("/contracts")}
           >
             Easy Smart Contracts
           </Typography>

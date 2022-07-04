@@ -5,7 +5,7 @@ import { OperationOrder } from "./solidity";
 
 BlocklySolidityGenerator["variables_get"] = function (block) {
   // Variable getter.
-  var code = BlocklySolidityGenerator.variableDB_.getName(
+  var code = BlocklySolidityGenerator.nameDB_.getName(
     block.getFieldValue("VAR"),
     Blockly.VARIABLE_CATEGORY_NAME
   );
@@ -20,7 +20,7 @@ BlocklySolidityGenerator["variables_set"] = function (block) {
       "VALUE",
       OperationOrder.ORDER_ASSIGNMENT
     ) || "0";
-  var varName = BlocklySolidityGenerator.variableDB_.getName(
+  var varName = BlocklySolidityGenerator.nameDB_.getName(
     block.getFieldValue("VAR"),
     Blockly.VARIABLE_CATEGORY_NAME
   );

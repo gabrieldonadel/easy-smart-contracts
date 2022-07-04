@@ -1,15 +1,15 @@
-import Blockly from "blockly";
+import Blockly, { Block } from "blockly";
 
 import { BlocklySolidityGenerator } from "./main";
 import { OperationOrder } from "./solidity";
 
-BlocklySolidityGenerator["math_number"] = function (block) {
+BlocklySolidityGenerator["math_number"] = function (block: Block) {
   // Numeric value.
   var code = parseFloat(block.getFieldValue("NUM"));
   return [code, OperationOrder.ORDER_ATOMIC];
 };
 
-BlocklySolidityGenerator["math_arithmetic"] = function (block) {
+BlocklySolidityGenerator["math_arithmetic"] = function (block: Block) {
   // Basic arithmetic operators, and power.
   var OPERATORS = {
     ADD: [" + ", OperationOrder.ORDER_ADDITION],
@@ -35,7 +35,7 @@ BlocklySolidityGenerator["math_arithmetic"] = function (block) {
   return [code, order];
 };
 
-BlocklySolidityGenerator["math_single"] = function (block) {
+BlocklySolidityGenerator["math_single"] = function (block: Block) {
   // Math operators with single operand.
   var operator = block.getFieldValue("OP");
   var code;
@@ -131,7 +131,7 @@ BlocklySolidityGenerator["math_single"] = function (block) {
   return [code, OperationOrder.ORDER_DIVISION];
 };
 
-BlocklySolidityGenerator["math_constant"] = function (block) {
+BlocklySolidityGenerator["math_constant"] = function (block: Block) {
   // Constants: PI, E, the Golden Ratio, sqrt(2), 1/sqrt(2), INFINITY.
   var CONSTANTS = {
     PI: ["Math.PI", OperationOrder.ORDER_MEMBER],
@@ -144,7 +144,7 @@ BlocklySolidityGenerator["math_constant"] = function (block) {
   return CONSTANTS[block.getFieldValue("CONSTANT")];
 };
 
-BlocklySolidityGenerator["math_number_property"] = function (block) {
+BlocklySolidityGenerator["math_number_property"] = function (block: Block) {
   // Check if a number is even, odd, prime, whole, positive, or negative
   // or if it is divisible by certain number. Returns true or false.
   var number_to_check =
@@ -216,7 +216,7 @@ BlocklySolidityGenerator["math_number_property"] = function (block) {
   return [code, OperationOrder.ORDER_EQUALITY];
 };
 
-BlocklySolidityGenerator["math_change"] = function (block) {
+BlocklySolidityGenerator["math_change"] = function (block: Block) {
   // Add to a variable in place.
   var argument0 =
     BlocklySolidityGenerator.valueToCode(
@@ -224,7 +224,7 @@ BlocklySolidityGenerator["math_change"] = function (block) {
       "DELTA",
       OperationOrder.ORDER_ADDITION
     ) || "0";
-  var varName = BlocklySolidityGenerator.variableDB_.getName(
+  var varName = BlocklySolidityGenerator.nameDB_.getName(
     block.getFieldValue("VAR"),
     Blockly.VARIABLE_CATEGORY_NAME
   );
@@ -246,7 +246,7 @@ BlocklySolidityGenerator["math_round"] =
 // Trigonometry functions have a single operand.
 BlocklySolidityGenerator["math_trig"] = BlocklySolidityGenerator["math_single"];
 
-BlocklySolidityGenerator["math_on_list"] = function (block) {
+BlocklySolidityGenerator["math_on_list"] = function (block: Block) {
   // Math functions for lists.
   var func = block.getFieldValue("OP");
   var list, code;
@@ -428,7 +428,7 @@ BlocklySolidityGenerator["math_on_list"] = function (block) {
   return [code, OperationOrder.ORDER_FUNCTION_CALL];
 };
 
-BlocklySolidityGenerator["math_modulo"] = function (block) {
+BlocklySolidityGenerator["math_modulo"] = function (block: Block) {
   // Remainder computation.
   var argument0 =
     BlocklySolidityGenerator.valueToCode(
@@ -446,7 +446,7 @@ BlocklySolidityGenerator["math_modulo"] = function (block) {
   return [code, OperationOrder.ORDER_MODULUS];
 };
 
-BlocklySolidityGenerator["math_constrain"] = function (block) {
+BlocklySolidityGenerator["math_constrain"] = function (block: Block) {
   // Constrain a number between two limits.
   var argument0 =
     BlocklySolidityGenerator.valueToCode(
@@ -477,7 +477,7 @@ BlocklySolidityGenerator["math_constrain"] = function (block) {
   return [code, OperationOrder.ORDER_FUNCTION_CALL];
 };
 
-BlocklySolidityGenerator["math_random_int"] = function (block) {
+BlocklySolidityGenerator["math_random_int"] = function (block: Block) {
   // Random integer between [X] and [Y].
   var argument0 =
     BlocklySolidityGenerator.valueToCode(
@@ -512,7 +512,7 @@ BlocklySolidityGenerator["math_random_int"] = function (block) {
   return [code, OperationOrder.ORDER_FUNCTION_CALL];
 };
 
-BlocklySolidityGenerator["math_random_float"] = function (block) {
+BlocklySolidityGenerator["math_random_float"] = function (block: Block) {
   // Random fraction between 0 and 1.
   return ["Math.random()", OperationOrder.ORDER_FUNCTION_CALL];
 };

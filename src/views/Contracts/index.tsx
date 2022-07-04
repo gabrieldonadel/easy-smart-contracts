@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -29,9 +30,8 @@ const Contracts = () => {
   const { enqueueSnackbar } = useSnackbar();
   const { user } = useContext(AuthContext);
 
-  const [contracts, setContracts] = useState<{ id: string; name: string }[]>(
-    []
-  );
+  const [contracts, setContracts] =
+    useState<{ id: string; name: string }[]>(undefined);
   const [deleteModalContractId, setDeleteModalContractId] = useState(undefined);
   const [isDeletingContract, setIsDeletingContract] = useState(false);
   const [isCreateContractModalOpen, setIsCreateContractModalOpen] =
@@ -100,31 +100,47 @@ const Contracts = () => {
   };
 
   return (
-    <Box sx={{ pt: 2 }}>
+    <Box sx={{ pt: 2, flex: 1, display: "flex", flexDirection: "column" }}>
       <Typography variant="h5" sx={{ pl: 2, fontWeight: "500" }}>
         Seus Projetos
       </Typography>
-      <List>
-        {contracts.map(({ id, name }) => (
-          <ListItem
-            key={id}
-            secondaryAction={
-              <IconButton
-                edge="end"
-                aria-label="delete"
-                onClick={() => setDeleteModalContractId(id)}
-              >
-                <DeleteIcon />
-              </IconButton>
-            }
-            disablePadding
-          >
-            <ListItemButton component={Link} to={`/editor/${id}`}>
-              <ListItemText primary={name} secondary={`Identificador: ${id}`} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
+      {contracts ? (
+        <List>
+          {contracts.map(({ id, name }) => (
+            <ListItem
+              key={id}
+              secondaryAction={
+                <IconButton
+                  edge="end"
+                  aria-label="delete"
+                  onClick={() => setDeleteModalContractId(id)}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              }
+              disablePadding
+            >
+              <ListItemButton component={Link} to={`/editor/${id}`}>
+                <ListItemText
+                  primary={name}
+                  secondary={`Identificador: ${id}`}
+                />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+      ) : (
+        <Box
+          sx={{
+            display: "flex",
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      )}
       <Fab
         color="primary"
         aria-label="add"

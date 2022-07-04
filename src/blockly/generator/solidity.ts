@@ -98,13 +98,13 @@ BlocklySolidityGenerator.init = function (workspace) {
   // to actual function names (to avoid collisions with user functions).
   BlocklySolidityGenerator.functionNames_ = Object.create(null);
 
-  if (!BlocklySolidityGenerator.variableDB_) {
-    BlocklySolidityGenerator.variableDB_ = new Blockly.Names(
+  if (!BlocklySolidityGenerator.nameDB_) {
+    BlocklySolidityGenerator.nameDB_ = new Blockly.Names(
       //@ts-ignore
       BlocklySolidityGenerator.RESERVED_WORDS_
     );
   } else {
-    BlocklySolidityGenerator.variableDB_.reset();
+    BlocklySolidityGenerator.nameDB_.reset();
   }
 };
 
@@ -122,7 +122,7 @@ BlocklySolidityGenerator.finish = function (code) {
   // Clean up temporary data.
   delete BlocklySolidityGenerator.definitions_;
   delete BlocklySolidityGenerator.functionNames_;
-  BlocklySolidityGenerator.variableDB_.reset();
+  BlocklySolidityGenerator.nameDB_.reset();
   return definitions.join("\n\n") + "\n\n\n" + code;
 };
 
@@ -216,74 +216,77 @@ BlocklySolidityGenerator.scrub_ = function (block: Block, code) {
  * @param {number=} opt_order The highest order acting on this value.
  * @return {string|number}
  */
-// BlocklySolidityGenerator.getAdjusted = function (
-//   block,
-//   atId,
-//   opt_delta,
-//   opt_negate,
-//   opt_order
-// ) {
-//   var delta = opt_delta || 0;
-//   var order = opt_order || Blockly.Solidity.ORDER_NONE;
-//   if (block.workspace.options.oneBasedIndex) {
-//     delta--;
-//   }
-//   var defaultAtIndex = block.workspace.options.oneBasedIndex ? "1" : "0";
-//   if (delta > 0) {
-//     var at =
-//       Blockly.Solidity.valueToCode(
-//         block,
-//         atId,
-//         Blockly.Solidity.ORDER_ADDITION
-//       ) || defaultAtIndex;
-//   } else if (delta < 0) {
-//     var at =
-//       Blockly.Solidity.valueToCode(
-//         block,
-//         atId,
-//         Blockly.Solidity.ORDER_SUBTRACTION
-//       ) || defaultAtIndex;
-//   } else if (opt_negate) {
-//     var at =
-//       Blockly.Solidity.valueToCode(
-//         block,
-//         atId,
-//         Blockly.Solidity.ORDER_UNARY_NEGATION
-//       ) || defaultAtIndex;
-//   } else {
-//     var at = Blockly.Solidity.valueToCode(block, atId, order) || defaultAtIndex;
-//   }
+// @ts-ignore
+BlocklySolidityGenerator.getAdjusted = function (
+  block,
+  atId,
+  opt_delta,
+  opt_negate,
+  opt_order
+) {
+  var delta = opt_delta || 0;
+  var order = opt_order || OperationOrder.ORDER_NONE;
+  if (block.workspace.options.oneBasedIndex) {
+    delta--;
+  }
+  var defaultAtIndex = block.workspace.options.oneBasedIndex ? "1" : "0";
+  if (delta > 0) {
+    var at =
+      BlocklySolidityGenerator.valueToCode(
+        block,
+        atId,
+        OperationOrder.ORDER_ADDITION
+      ) || defaultAtIndex;
+  } else if (delta < 0) {
+    var at =
+      BlocklySolidityGenerator.valueToCode(
+        block,
+        atId,
+        OperationOrder.ORDER_SUBTRACTION
+      ) || defaultAtIndex;
+  } else if (opt_negate) {
+    var at =
+      BlocklySolidityGenerator.valueToCode(
+        block,
+        atId,
+        OperationOrder.ORDER_UNARY_NEGATION
+      ) || defaultAtIndex;
+  } else {
+    var at =
+      BlocklySolidityGenerator.valueToCode(block, atId, order) ||
+      defaultAtIndex;
+  }
 
-//   if (Blockly.isNumber(at)) {
-//     // If the index is a naked number, adjust it right now.
-//     at = parseFloat(at) + delta;
-//     if (opt_negate) {
-//       at = -at;
-//     }
-//   } else {
-//     // If the index is dynamic, adjust it in code.
-//     if (delta > 0) {
-//       at = at + " + " + delta;
-//       var innerOrder = Blockly.Solidity.ORDER_ADDITION;
-//     } else if (delta < 0) {
-//       at = at + " - " + -delta;
-//       var innerOrder = Blockly.Solidity.ORDER_SUBTRACTION;
-//     }
-//     if (opt_negate) {
-//       if (delta) {
-//         at = "-(" + at + ")";
-//       } else {
-//         at = "-" + at;
-//       }
-//       var innerOrder = Blockly.Solidity.ORDER_UNARY_NEGATION;
-//     }
-//     innerOrder = Math.floor(innerOrder);
-//     order = Math.floor(order);
-//     if (innerOrder && order >= innerOrder) {
-//       at = "(" + at + ")";
-//     }
-//   }
-//   return at;
-// };
+  if (Blockly.isNumber(at)) {
+    // If the index is a naked number, adjust it right now.
+    at = parseFloat(at) + delta;
+    if (opt_negate) {
+      at = String(-at);
+    }
+  } else {
+    // If the index is dynamic, adjust it in code.
+    if (delta > 0) {
+      at = at + " + " + delta;
+      var innerOrder = OperationOrder.ORDER_ADDITION;
+    } else if (delta < 0) {
+      at = at + " - " + -delta;
+      var innerOrder = OperationOrder.ORDER_SUBTRACTION;
+    }
+    if (opt_negate) {
+      if (delta) {
+        at = "-(" + at + ")";
+      } else {
+        at = "-" + at;
+      }
+      var innerOrder = OperationOrder.ORDER_UNARY_NEGATION;
+    }
+    innerOrder = Math.floor(innerOrder);
+    order = Math.floor(order);
+    if (innerOrder && order >= innerOrder) {
+      at = "(" + at + ")";
+    }
+  }
+  return at;
+};
 
 export { BlocklySolidityGenerator };

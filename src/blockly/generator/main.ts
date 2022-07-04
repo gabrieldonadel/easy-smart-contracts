@@ -1,12 +1,13 @@
-import Blockly from "blockly";
+import Blockly, { Names } from "blockly";
 import { LabelGroup } from "./solidity";
 
-interface SolidityGenerator extends Blockly.Generator {
-  variableDB_?: any;
+interface SolidityGenerator extends Omit<Blockly.Generator, "nameDB_"> {
+  nameDB_: Names | undefined;
 }
 
-export const BlocklySolidityGenerator: SolidityGenerator =
-  new Blockly.Generator("Solidity");
+export const BlocklySolidityGenerator = new Blockly.Generator(
+  "Solidity"
+) as unknown as SolidityGenerator;
 
 const getAllVariables = function (workspace) {
   return workspace.getAllVariables();
