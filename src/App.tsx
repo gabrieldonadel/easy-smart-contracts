@@ -47,7 +47,7 @@ const App = () => {
   }
 
   return (
-    <SnackbarProvider maxSnack={5}>
+    <SnackbarProvider maxSnack={5} style={{ maxWidth: 600 }}>
       <AuthContext.Provider value={{ setUser, user }}>
         <Routes>
           <Route path="/login" element={<Login />} />

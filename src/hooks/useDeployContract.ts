@@ -1,22 +1,50 @@
 import { useCallback, useEffect, useState } from "react";
+import detectEthereumProvider from "@metamask/detect-provider";
+import { useSnackbar } from "notistack";
 
 import { web3 } from "../web3";
 
 export const useDeployContract = () => {
+  const { enqueueSnackbar } = useSnackbar();
+
   const [account, setAccount] = useState(null);
+  const [provider, setProvider] = useState<unknown>();
 
   const loadAccounts = useCallback(async () => {
-    await (window as any).ethereum.enable();
-    const accounts = await web3.eth.getAccounts();
+    try {
+      const accounts = await web3.eth.getAccounts();
 
-    setAccount(accounts?.[0]);
+      setAccount(accounts?.[0]);
+
+      return accounts;
+    } catch (error) {
+      console.log("loadAccounts error", error);
+    }
   }, []);
 
-  useEffect(() => {
-    loadAccounts();
+  const init = useCallback(async () => {
+    const newProvider = await detectEthereumProvider();
+    setProvider(newProvider);
+    if (newProvider) {
+      loadAccounts();
+    }
   }, [loadAccounts]);
 
+  useEffect(() => {
+    init();
+  }, [init]);
+
   const deploy = async ({ result }) => {
+    if (!provider) {
+      enqueueSnackbar(
+        `Não foi possível se conectar ao MetaMask, por favor certifique-se que a extensão está instalada.
+        Mais informações em https://metamask.io/`,
+        {
+          variant: "error",
+        }
+      );
+      return;
+    }
     if (!account) {
       await loadAccounts();
     }
@@ -35,6 +63,11 @@ export const useDeployContract = () => {
       console.log("deployedInstance", deployedInstance);
     } catch (error) {
       console.log("error", error);
+      if (error?.message?.includes("User denied transaction signature")) {
+        enqueueSnackbar("Assinatura da transação foi negada pelo usuário.", {
+          variant: "error",
+        });
+      }
     }
   };
   return { deploy };

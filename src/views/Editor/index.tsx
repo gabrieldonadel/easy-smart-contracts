@@ -101,6 +101,9 @@ const Editor = () => {
 
   const deployContract = async () => {
     if (!compiledContract) {
+      enqueueSnackbar("Você deve primeiramente compilar o seu contrato", {
+        variant: "warning",
+      });
       return;
     }
     setDeployingContract(true);
