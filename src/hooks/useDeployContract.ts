@@ -8,31 +8,37 @@ export const useDeployContract = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   const [account, setAccount] = useState(null);
-  const [provider, setProvider] = useState<unknown>();
+  const [provider, setProvider] = useState<any>();
 
   const loadAccounts = useCallback(async () => {
     try {
-      const accounts = await web3.eth.getAccounts();
+      const accounts = await provider.request({
+        method: "eth_requestAccounts",
+      });
 
       setAccount(accounts?.[0]);
-
-      return accounts;
+      return accounts?.[0];
     } catch (error) {
       console.log("loadAccounts error", error);
+      if (error?.message?.includes("Already processing eth_requestAccounts.")) {
+        enqueueSnackbar("Certifique-se que sua carteira esteja desbloqueada", {
+          variant: "warning",
+        });
+      }
     }
-  }, []);
-
-  const init = useCallback(async () => {
-    const newProvider = await detectEthereumProvider();
-    setProvider(newProvider);
-    if (newProvider) {
-      loadAccounts();
-    }
-  }, [loadAccounts]);
+  }, [enqueueSnackbar, provider]);
 
   useEffect(() => {
-    init();
-  }, [init]);
+    detectEthereumProvider().then((newProvider) => {
+      setProvider(newProvider);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (provider) {
+      loadAccounts();
+    }
+  }, [loadAccounts, provider]);
 
   const deploy = async ({ result }) => {
     if (!provider) {
@@ -45,6 +51,7 @@ export const useDeployContract = () => {
       );
       return;
     }
+
     if (!account) {
       await loadAccounts();
     }

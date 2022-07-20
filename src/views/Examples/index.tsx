@@ -15,26 +15,14 @@ const exampleProjects = [
     image: Contador,
     name: "Contador",
     description: `
-    Exemplo de código de um contador Lorem ipsum dolor sit amet,
-    consectetur adipiscing elit. Proin venenatis nisi velit, quis rhoncus
-    est tempor ut. Proin in libero nec dui iaculis pellentesque id id
-    turpis. Praesent iaculis nulla non massa fermentum, vitae accumsan dui
-    ullamcorper. Integer consequat odio congue euismod tempor. Praesent
-    vitae tellus vitae justo aliquet finibus et a elit. Aliquam non turpis
-    sit amet mauris porttitor fringilla eget vitae risus. Vestibulum quis
-    diam vitae erat ultrices fermentum. Etiam interdum turpis vel sem
-    mollis consequat. Morbi sit amet ligula finibus, mollis justo ac,
-    pretium nisi. Integer mollis rhoncus pulvinar. Vestibulum scelerisque
-    mattis sem vel tristique. Duis sagittis tempus tristique. Curabitur
-    facilisis libero risus, non ullamcorper odio hendrerit quis. Aliquam
-    ultricies fermentum efficitur. Cras pellentesque mollis nulla in
-    iaculis. Aenean nisi odio, lobortis sed mollis vel, cursus euismod
-    ligula. Donec ornare erat euismod dapibus venenatis. Mauris neque
-    justo, vulputate at nisl in, rhoncus finibus turpis. Mauris elit enim,
-    volutpat eu sapien mollis, fermentum ultrices elit. Cras at metus
-    bibendum, cursus magna eget, sollicitudin nisl. Pellentesque eros
-    enim, dignissim quis dignissim ac, tristique quis arcu. Integer dictum
-    vehicula metus, quis varius ipsum consequat sed.`,
+    Este é exemplo de um projeto contrato que armazena em um estado interno um contador. Através dos blocos de Smart Contract (bloco em verde),
+    e do bloco de instanciação podemos definir estados para um contrato arrastando blocos para a seção de states, é por meio dela que todos os estados
+    da entidade Contrato são declarados. Fazendo o uso dos blocos de métodos (blocos em roxo) podemos declarar funções, que podem ou não receber
+    parâmetros e executar qualquer tipo de código dentro na seção code. Desta forma basta que sejam arrastados os blocos de métodos juntamente com os
+    blocos atualizadores de valores (blocos em azul claro) para que o código do contrato esteja pronto. Agora que você entendeu como este contrato funciona
+    experimente cria-lo do zero criando um novo projeto pela aba projetos, em caso de dúvidas você também pode apertar no botão "Criar Projeto" para criar um
+    novo projeto contendo o código completo deste exemplo.
+`,
     contract: conterExampleContract,
   },
 ];
