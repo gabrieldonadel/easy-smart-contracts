@@ -1,6 +1,9 @@
 # Easy Smart Contracts
 
-![alt text](readme/images/editor.png)
+[![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/gabrieldonadel/easy-smart-contracts/blob/master/README.md)
+[![pt-br](https://img.shields.io/badge/lang-pt--br-green.svg)](https://github.com/gabrieldonadel/easy-smart-contracts/blob/master/README.pt-br.md)
 
-Easy Smart Contracts é uma plataforma web open source low-code que possibilita a criação e implantação de contratos
-inteligentes na rede Ethereum, por meio de uma interface amigável e intuitiva, sem a necessidade de conhecimento prévio em programação.
+![Easy Smart Contracts Editor](readme/images/editor.png)
+
+Easy Smart Contracts is a low-code open source web platform that allows the creation and implementation of smart contracts
+on the Ethereum network, through a friendly and intuitive interface, without the need for previous programming knowledge.
