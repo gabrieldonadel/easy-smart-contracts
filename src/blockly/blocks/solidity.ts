@@ -61,8 +61,9 @@ Blockly.Blocks["solidity_contract_definition"] = {
         ["interface", "interface"],
         ["library", "library"],
       ]), "KIND")
-      .appendField(new Blockly.FieldTextInput("MyContract"), "NAME")
-      .appendField("inherits")
+      .appendField(new Blockly.FieldTextInput("MyContract"), "NAME");
+    this.appendDummyInput()
+      .appendField("inherits (optional)")
       .appendField(new Blockly.FieldTextInput(""), "INHERITS");
     this.appendStatementInput("BODY").setCheck(MEMBER).appendField("body");
     this.setPreviousStatement(true, TOP_LEVEL);
@@ -95,16 +96,19 @@ Blockly.Blocks["solidity_state_variable"] = {
     this.appendDummyInput()
       .appendField("state")
       .appendField(new Blockly.FieldTextInput("uint256"), "TYPE")
+      .appendField(new Blockly.FieldTextInput("value"), "NAME");
+    this.appendDummyInput()
+      .appendField("access")
       .appendField(new Blockly.FieldDropdown([
         ["default", ""], ["public", "public"], ["internal", "internal"], ["private", "private"],
       ]), "VISIBILITY")
       .appendField(new Blockly.FieldDropdown([
         ["mutable", ""], ["constant", "constant"], ["immutable", "immutable"], ["transient", "transient"],
-      ]), "MUTABILITY")
-      .appendField(new Blockly.FieldTextInput("value"), "NAME");
-    this.appendDummyInput()
-      .appendField("initializer")
-      .appendField(new Blockly.FieldTextInput(""), "INITIALIZER");
+      ]), "MUTABILITY");
+    this.appendValueInput("INITIAL_VALUE").appendField("initial value (optional)");
+    this.appendDummyInput("LEGACY_INITIALIZER")
+      .appendField(new Blockly.FieldTextInput(""), "INITIALIZER")
+      .setVisible(false);
     this.setPreviousStatement(true, MEMBER);
     this.setNextStatement(true, MEMBER);
     this.setColour(195);
@@ -116,13 +120,14 @@ Blockly.Blocks["solidity_event_definition"] = {
     this.appendDummyInput()
       .appendField("event")
       .appendField(new Blockly.FieldTextInput("Changed"), "NAME")
-      .appendField("parameters")
-      .appendField(new Blockly.FieldTextInput("address indexed account"), "PARAMS")
       .appendField("anonymous")
       .appendField(
         new Blockly.FieldCheckbox("FALSE", undefined, undefined),
         "ANONYMOUS"
       );
+    this.appendDummyInput()
+      .appendField("parameters")
+      .appendField(new Blockly.FieldTextInput("address indexed account"), "PARAMS");
     this.setPreviousStatement(true, [TOP_LEVEL, MEMBER]);
     this.setNextStatement(true, [TOP_LEVEL, MEMBER]);
     this.setColour(230);
@@ -133,7 +138,8 @@ Blockly.Blocks["solidity_error_definition"] = {
   init: function () {
     this.appendDummyInput()
       .appendField("error")
-      .appendField(new Blockly.FieldTextInput("Unauthorized"), "NAME")
+      .appendField(new Blockly.FieldTextInput("Unauthorized"), "NAME");
+    this.appendDummyInput()
       .appendField("parameters")
       .appendField(new Blockly.FieldTextInput("address caller"), "PARAMS");
     this.setPreviousStatement(true, [TOP_LEVEL, MEMBER]);
@@ -171,9 +177,11 @@ Blockly.Blocks["solidity_modifier_definition"] = {
   init: function () {
     this.appendDummyInput()
       .appendField("modifier")
-      .appendField(new Blockly.FieldTextInput("onlyOwner"), "NAME")
+      .appendField(new Blockly.FieldTextInput("onlyOwner"), "NAME");
+    this.appendDummyInput()
       .appendField("parameters")
-      .appendField(new Blockly.FieldTextInput(""), "PARAMS")
+      .appendField(new Blockly.FieldTextInput(""), "PARAMS");
+    this.appendDummyInput()
       .appendField("attributes")
       .appendField(new Blockly.FieldTextInput(""), "ATTRIBUTES");
     this.appendStatementInput("BODY").appendField("body");
@@ -186,8 +194,11 @@ Blockly.Blocks["solidity_modifier_definition"] = {
 Blockly.Blocks["solidity_constructor_definition"] = {
   init: function () {
     this.appendDummyInput()
-      .appendField("constructor parameters")
-      .appendField(new Blockly.FieldTextInput(""), "PARAMS")
+      .appendField("constructor");
+    this.appendDummyInput()
+      .appendField("parameters")
+      .appendField(new Blockly.FieldTextInput(""), "PARAMS");
+    this.appendDummyInput()
       .appendField("modifiers/base constructors")
       .appendField(new Blockly.FieldTextInput(""), "MODIFIERS");
     this.appendStatementInput("BODY").appendField("body");
@@ -201,7 +212,8 @@ Blockly.Blocks["solidity_function_definition"] = {
   init: function () {
     this.appendDummyInput()
       .appendField("function")
-      .appendField(new Blockly.FieldTextInput("myFunction"), "NAME")
+      .appendField(new Blockly.FieldTextInput("myFunction"), "NAME");
+    this.appendDummyInput()
       .appendField("parameters")
       .appendField(new Blockly.FieldTextInput(""), "PARAMS");
     this.appendDummyInput()
@@ -210,7 +222,8 @@ Blockly.Blocks["solidity_function_definition"] = {
       ]), "VISIBILITY")
       .appendField(new Blockly.FieldDropdown([
         ["nonpayable", ""], ["view", "view"], ["pure", "pure"], ["payable", "payable"],
-      ]), "MUTABILITY")
+      ]), "MUTABILITY");
+    this.appendDummyInput()
       .appendField("modifiers / virtual / override")
       .appendField(new Blockly.FieldTextInput(""), "MODIFIERS");
     this.appendDummyInput()
@@ -244,10 +257,12 @@ Blockly.Blocks["solidity_receive_definition"] = {
 Blockly.Blocks["solidity_fallback_definition"] = {
   init: function () {
     this.appendDummyInput()
-      .appendField("fallback parameters")
-      .appendField(new Blockly.FieldTextInput(""), "PARAMS")
+      .appendField("fallback")
       .appendField(new Blockly.FieldDropdown([["external", "external"]]), "VISIBILITY")
       .appendField(new Blockly.FieldDropdown([["nonpayable", ""], ["payable", "payable"]]), "MUTABILITY");
+    this.appendDummyInput()
+      .appendField("parameters")
+      .appendField(new Blockly.FieldTextInput(""), "PARAMS");
     this.appendDummyInput()
       .appendField("returns")
       .appendField(new Blockly.FieldTextInput(""), "RETURNS");
@@ -275,9 +290,11 @@ Blockly.Blocks["solidity_variable_declaration"] = {
     this.appendDummyInput()
       .appendField("local")
       .appendField(new Blockly.FieldTextInput("uint256"), "TYPE")
-      .appendField(new Blockly.FieldTextInput("value"), "NAME")
-      .appendField("=")
-      .appendField(new Blockly.FieldTextInput("0"), "VALUE");
+      .appendField(new Blockly.FieldTextInput("value"), "NAME");
+    this.appendValueInput("INITIAL_VALUE").appendField("initial value (optional)");
+    this.appendDummyInput("LEGACY_VALUE")
+      .appendField(new Blockly.FieldTextInput(""), "VALUE")
+      .setVisible(false);
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setColour(330);
@@ -313,6 +330,203 @@ Blockly.Blocks["solidity_raw_expression"] = {
     this.setOutput(true);
     this.setColour(60);
     this.setTooltip("Expression escape hatch for calls, conversions, member/index access, tuples, arrays, new, and operators.");
+  },
+};
+
+Blockly.Blocks["solidity_identifier"] = {
+  init: function () {
+    this.appendDummyInput()
+      .appendField("name")
+      .appendField(new Blockly.FieldTextInput("value"), "NAME");
+    this.setOutput(true);
+    this.setColour(45);
+    this.setTooltip("A state variable, parameter, local variable, type, or function name.");
+  },
+};
+
+Blockly.Blocks["solidity_environment"] = {
+  init: function () {
+    this.appendDummyInput()
+      .appendField("context")
+      .appendField(new Blockly.FieldDropdown([
+        ["msg.sender", "msg.sender"],
+        ["msg.value", "msg.value"],
+        ["msg.data", "msg.data"],
+        ["tx.origin", "tx.origin"],
+        ["block.timestamp", "block.timestamp"],
+        ["block.number", "block.number"],
+        ["block.chainid", "block.chainid"],
+        ["address(this)", "address(this)"],
+      ]), "VALUE");
+    this.setOutput(true);
+    this.setColour(45);
+  },
+};
+
+Blockly.Blocks["solidity_string_literal"] = {
+  init: function () {
+    this.appendDummyInput()
+      .appendField("text")
+      .appendField(new Blockly.FieldTextInput("message"), "VALUE");
+    this.setOutput(true, "String");
+    this.setColour(45);
+  },
+};
+
+Blockly.Blocks["solidity_member_access"] = {
+  init: function () {
+    this.appendValueInput("OBJECT").appendField("member of");
+    this.appendDummyInput()
+      .appendField("property")
+      .appendField(new Blockly.FieldTextInput("length"), "MEMBER");
+    this.setOutput(true);
+    this.setColour(45);
+    this.setInputsInline(true);
+  },
+};
+
+Blockly.Blocks["solidity_index_access"] = {
+  init: function () {
+    this.appendValueInput("TARGET").appendField("item in");
+    this.appendValueInput("INDEX").appendField("at");
+    this.setOutput(true);
+    this.setColour(45);
+    this.setInputsInline(true);
+  },
+};
+
+Blockly.Blocks["solidity_call_expression"] = {
+  init: function () {
+    this.appendValueInput("CALLEE").appendField("call");
+    this.appendDummyInput()
+      .appendField("arguments")
+      .appendField(new Blockly.FieldTextInput(""), "ARGS");
+    this.setOutput(true);
+    this.setColour(45);
+  },
+};
+
+Blockly.Blocks["solidity_assignment_statement"] = {
+  init: function () {
+    this.appendDummyInput()
+      .appendField("assignment")
+      .appendField(new Blockly.FieldDropdown([
+      ["=", "="], ["+=", "+="], ["-=", "-="], ["*=", "*="], ["/=", "/="], ["%=", "%="],
+      ["|=", "|="], ["&=", "&="], ["^=", "^="], ["<<=", "<<="], [">>=", ">>="],
+    ]), "OPERATOR");
+    this.appendValueInput("TARGET").appendField("target");
+    this.appendValueInput("VALUE").appendField("value");
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setColour(330);
+  },
+};
+
+Blockly.Blocks["solidity_emit_statement"] = {
+  init: function () {
+    this.appendDummyInput()
+      .appendField("emit event")
+      .appendField(new Blockly.FieldTextInput("Changed"), "NAME");
+    this.appendDummyInput()
+      .appendField("arguments")
+      .appendField(new Blockly.FieldTextInput(""), "ARGS");
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setColour(330);
+  },
+};
+
+Blockly.Blocks["solidity_require_statement"] = {
+  init: function () {
+    this.appendValueInput("CONDITION").setCheck("Boolean").appendField(
+      new Blockly.FieldDropdown([["require", "require"], ["assert", "assert"]]),
+      "KIND"
+    );
+    this.appendValueInput("MESSAGE").appendField("message/error (optional)");
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setColour(330);
+  },
+};
+
+Blockly.Blocks["solidity_expression_statement"] = {
+  init: function () {
+    this.appendValueInput("EXPRESSION").appendField("run");
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setColour(330);
+    this.setTooltip("Runs a function call or another expression as a statement.");
+  },
+};
+
+Blockly.Blocks["solidity_revert_statement"] = {
+  init: function () {
+    this.appendDummyInput()
+      .appendField("revert")
+      .appendField(new Blockly.FieldTextInput("Unauthorized"), "ERROR")
+      .appendField("arguments")
+      .appendField(new Blockly.FieldTextInput(""), "ARGS");
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setColour(330);
+  },
+};
+
+Blockly.Blocks["solidity_return_statement"] = {
+  init: function () {
+    this.appendValueInput("VALUE").appendField("return (optional)");
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setColour(330);
+  },
+};
+
+Blockly.Blocks["solidity_delete_statement"] = {
+  init: function () {
+    this.appendValueInput("TARGET").appendField("delete");
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setColour(330);
+  },
+};
+
+Blockly.Blocks["solidity_while_statement"] = {
+  init: function () {
+    this.appendValueInput("CONDITION").setCheck("Boolean").appendField("while");
+    this.appendStatementInput("BODY").appendField("do");
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setColour(330);
+  },
+};
+
+Blockly.Blocks["solidity_for_statement"] = {
+  init: function () {
+    this.appendDummyInput().appendField("for loop");
+    this.appendDummyInput()
+      .appendField("initialize")
+      .appendField(new Blockly.FieldTextInput("uint256 i = 0"), "INITIALIZER");
+    this.appendDummyInput()
+      .appendField("while")
+      .appendField(new Blockly.FieldTextInput("i < 10"), "CONDITION");
+    this.appendDummyInput()
+      .appendField("after each iteration")
+      .appendField(new Blockly.FieldTextInput("++i"), "LOOP");
+    this.appendStatementInput("BODY").appendField("do");
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setColour(330);
+  },
+};
+
+Blockly.Blocks["solidity_loop_control"] = {
+  init: function () {
+    this.appendDummyInput().appendField(new Blockly.FieldDropdown([
+      ["break", "break"], ["continue", "continue"],
+    ]), "CONTROL");
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setColour(330);
   },
 };
 

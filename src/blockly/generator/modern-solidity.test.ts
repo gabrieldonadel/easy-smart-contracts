@@ -27,6 +27,26 @@ const connectStatement = (
   parent.getInput(input).connection.connect(child.previousConnection);
 };
 
+const connectValue = (
+  parent: Blockly.Block,
+  input: string,
+  child: Blockly.Block
+) => {
+  parent.getInput(input).connection.connect(child.outputConnection);
+};
+
+const balanceUpdate = (workspace: Blockly.Workspace) => {
+  const assignment = createBlock(workspace, "solidity_assignment_statement", {
+    OPERATOR: "+=",
+  });
+  const indexedBalance = createBlock(workspace, "solidity_index_access");
+  connectValue(indexedBalance, "TARGET", createBlock(workspace, "solidity_identifier", { NAME: "balances" }));
+  connectValue(indexedBalance, "INDEX", createBlock(workspace, "solidity_environment", { VALUE: "msg.sender" }));
+  connectValue(assignment, "TARGET", indexedBalance);
+  connectValue(assignment, "VALUE", createBlock(workspace, "solidity_environment", { VALUE: "msg.value" }));
+  return assignment;
+};
+
 const compile = (source: string) => {
   const result = JSON.parse(
     solc.compile(
@@ -77,14 +97,12 @@ describe("modern Solidity blocks", () => {
       VISIBILITY: "public",
       MUTABILITY: "immutable",
       NAME: "owner",
-      INITIALIZER: "",
     });
     const balances = createBlock(workspace, "solidity_state_variable", {
       TYPE: "mapping(address => uint256)",
       VISIBILITY: "public",
       MUTABILITY: "",
       NAME: "balances",
-      INITIALIZER: "",
     });
     const modifier = createBlock(workspace, "solidity_modifier_definition", {
       NAME: "onlyOwner",
@@ -100,9 +118,11 @@ describe("modern Solidity blocks", () => {
       PARAMS: "address initialOwner",
       MODIFIERS: "",
     });
-    const constructorBody = createBlock(workspace, "solidity_raw_statement", {
-      CODE: "owner = initialOwner;",
+    const constructorBody = createBlock(workspace, "solidity_assignment_statement", {
+      OPERATOR: "=",
     });
+    connectValue(constructorBody, "TARGET", createBlock(workspace, "solidity_identifier", { NAME: "owner" }));
+    connectValue(constructorBody, "VALUE", createBlock(workspace, "solidity_identifier", { NAME: "initialOwner" }));
     connectStatement(constructor, "BODY", constructorBody);
 
     const deposit = createBlock(workspace, "solidity_function_definition", {
@@ -114,9 +134,22 @@ describe("modern Solidity blocks", () => {
       RETURNS: "",
       DECLARATION: "FALSE",
     });
-    const depositBody = createBlock(workspace, "solidity_raw_statement", {
-      CODE: "balances[msg.sender] += msg.value;\nemit Deposited(msg.sender, msg.value);",
+    const depositBody = createBlock(workspace, "solidity_require_statement", {
+      KIND: "require",
     });
+    const positiveValue = createBlock(workspace, "logic_compare", { OP: "GT" });
+    connectValue(positiveValue, "A", createBlock(workspace, "solidity_environment", { VALUE: "msg.value" }));
+    connectValue(positiveValue, "B", createBlock(workspace, "math_number", { NUM: "0" }));
+    connectValue(depositBody, "CONDITION", positiveValue);
+    connectValue(depositBody, "MESSAGE", createBlock(workspace, "solidity_string_literal", { VALUE: "No value sent" }));
+
+    const updateBalance = balanceUpdate(workspace);
+    const emitDeposit = createBlock(workspace, "solidity_emit_statement", {
+      NAME: "Deposited",
+      ARGS: "msg.sender, msg.value",
+    });
+    connectNext(depositBody, updateBalance);
+    connectNext(updateBalance, emitDeposit);
     connectStatement(deposit, "BODY", depositBody);
 
     const close = createBlock(workspace, "solidity_function_definition", {
@@ -137,9 +170,7 @@ describe("modern Solidity blocks", () => {
       VISIBILITY: "external",
       MUTABILITY: "payable",
     });
-    const receiveBody = createBlock(workspace, "solidity_raw_statement", {
-      CODE: "balances[msg.sender] += msg.value;",
-    });
+    const receiveBody = balanceUpdate(workspace);
     connectStatement(receive, "BODY", receiveBody);
 
     const fallback = createBlock(workspace, "solidity_fallback_definition", {
@@ -172,6 +203,9 @@ describe("modern Solidity blocks", () => {
     expect(source).toContain("constructor(address initialOwner)");
     expect(source).toContain("error Unauthorized(address caller);");
     expect(source).toContain("receive() external payable");
+    expect(source).toContain("balances[msg.sender] += msg.value;");
+    expect(source).toContain("emit Deposited(msg.sender, msg.value);");
+    expect(source).toContain('require(msg.value > 0, "No value sent");');
     expect(compile(source)).toEqual([]);
   });
 

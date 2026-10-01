@@ -15,6 +15,9 @@ const tokens = (...values: string[]) => values.filter(Boolean).join(" ");
 const body = (block, input = "BODY") =>
   BlocklySolidityGenerator.statementToCode(block, input);
 
+const value = (block, input: string, fallback = "", order = 99) =>
+  BlocklySolidityGenerator.valueToCode(block, input, order) || fallback;
+
 const braced = (header: string, contents: string) =>
   `${header} {\n${contents}}\n`;
 
@@ -56,7 +59,8 @@ BlocklySolidityGenerator["solidity_state_variable"] = function (block) {
     field(block, "MUTABILITY"),
     field(block, "NAME") || "value"
   );
-  const initializer = field(block, "INITIALIZER");
+  const initializer =
+    value(block, "INITIAL_VALUE") || field(block, "INITIALIZER");
   return `${declaration}${initializer ? ` = ${initializer}` : ""};\n`;
 };
 
@@ -139,9 +143,9 @@ BlocklySolidityGenerator["solidity_raw_statement"] = function (block) {
 };
 
 BlocklySolidityGenerator["solidity_variable_declaration"] = function (block) {
-  const value = field(block, "VALUE");
+  const initialValue = value(block, "INITIAL_VALUE") || field(block, "VALUE");
   return `${tokens(field(block, "TYPE"), field(block, "NAME"))}${
-    value ? ` = ${value}` : ""
+    initialValue ? ` = ${initialValue}` : ""
   };\n`;
 };
 
@@ -160,4 +164,91 @@ BlocklySolidityGenerator["solidity_assembly_statement"] = function (block) {
 
 BlocklySolidityGenerator["solidity_raw_expression"] = function (block) {
   return [field(block, "CODE") || "0", 0];
+};
+
+BlocklySolidityGenerator["solidity_identifier"] = function (block) {
+  return [field(block, "NAME") || "value", 0];
+};
+
+BlocklySolidityGenerator["solidity_environment"] = function (block) {
+  return [field(block, "VALUE") || "msg.sender", 0];
+};
+
+BlocklySolidityGenerator["solidity_string_literal"] = function (block) {
+  return [JSON.stringify(field(block, "VALUE")), 0];
+};
+
+BlocklySolidityGenerator["solidity_member_access"] = function (block) {
+  const object = value(block, "OBJECT", "value", 1.2);
+  return [`${object}.${field(block, "MEMBER") || "length"}`, 1.2];
+};
+
+BlocklySolidityGenerator["solidity_index_access"] = function (block) {
+  const target = value(block, "TARGET", "values", 1.2);
+  return [`${target}[${value(block, "INDEX", "0")}]`, 1.2];
+};
+
+BlocklySolidityGenerator["solidity_call_expression"] = function (block) {
+  const callee = value(block, "CALLEE", "functionName", 2);
+  return [`${callee}(${field(block, "ARGS")})`, 2];
+};
+
+BlocklySolidityGenerator["solidity_assignment_statement"] = function (block) {
+  const operator = field(block, "OPERATOR") || "=";
+  return `${value(block, "TARGET", "value")} ${operator} ${value(
+    block,
+    "VALUE",
+    "0"
+  )};\n`;
+};
+
+BlocklySolidityGenerator["solidity_emit_statement"] = function (block) {
+  return `emit ${field(block, "NAME") || "Changed"}(${field(block, "ARGS")});\n`;
+};
+
+BlocklySolidityGenerator["solidity_require_statement"] = function (block) {
+  const condition = value(block, "CONDITION", "true");
+  const message = value(block, "MESSAGE");
+  return `${field(block, "KIND") || "require"}(${condition}${
+    message ? `, ${message}` : ""
+  });\n`;
+};
+
+BlocklySolidityGenerator["solidity_expression_statement"] = function (block) {
+  return `${value(block, "EXPRESSION", "functionName()")};\n`;
+};
+
+BlocklySolidityGenerator["solidity_revert_statement"] = function (block) {
+  const error = field(block, "ERROR");
+  return error
+    ? `revert ${error}(${field(block, "ARGS")});\n`
+    : "revert();\n";
+};
+
+BlocklySolidityGenerator["solidity_return_statement"] = function (block) {
+  const returnValue = value(block, "VALUE");
+  return `return${returnValue ? ` ${returnValue}` : ""};\n`;
+};
+
+BlocklySolidityGenerator["solidity_delete_statement"] = function (block) {
+  return `delete ${value(block, "TARGET", "value")};\n`;
+};
+
+BlocklySolidityGenerator["solidity_while_statement"] = function (block) {
+  return braced(
+    `while (${value(block, "CONDITION", "true")})`,
+    body(block)
+  );
+};
+
+BlocklySolidityGenerator["solidity_for_statement"] = function (block) {
+  const header = `for (${field(block, "INITIALIZER")}; ${field(
+    block,
+    "CONDITION"
+  )}; ${field(block, "LOOP")})`;
+  return braced(header, body(block));
+};
+
+BlocklySolidityGenerator["solidity_loop_control"] = function (block) {
+  return `${field(block, "CONTROL") || "break"};\n`;
 };

@@ -3,66 +3,91 @@ import { ToolboxDefinition } from "react-blockly";
 const blocks = (...types: string[]) =>
   types.map((type) => ({ kind: "block" as const, type }));
 
+const block = (type: string, inputs: Record<string, unknown>) => ({
+  kind: "block" as const,
+  type,
+  inputs,
+});
+
+const shadow = (type: string, fields: Record<string, string> = {}) => ({
+  shadow: { type, fields },
+});
+
 export const toolbox: ToolboxDefinition = {
   kind: "categoryToolbox",
   contents: [
     {
       kind: "category",
-      name: "Solidity source",
+      name: "Source setup",
       colour: "#795548",
       contents: blocks(
         "solidity_preamble",
         "solidity_import",
-        "solidity_raw_top_level",
-        "solidity_raw_source"
+        "solidity_contract_definition"
       ),
     },
     {
       kind: "category",
-      name: "Contracts & types",
+      name: "Contract members",
       colour: "#03a9f4",
       contents: blocks(
-        "solidity_contract_definition",
         "solidity_state_variable",
         "solidity_struct_definition",
         "solidity_enum_definition",
         "solidity_event_definition",
-        "solidity_error_definition",
-        "solidity_raw_member"
+        "solidity_error_definition"
       ),
     },
     {
       kind: "category",
-      name: "Functions",
+      name: "Functions & modifiers",
       colour: "#9c27b0",
       contents: blocks(
         "solidity_constructor_definition",
         "solidity_function_definition",
         "solidity_modifier_definition",
         "solidity_receive_definition",
-        "solidity_fallback_definition",
-        "contract_method_call",
-        "return"
+        "solidity_fallback_definition"
       ),
     },
     {
       kind: "category",
-      name: "Statements",
+      name: "Actions",
       colour: "#e91e63",
-      contents: blocks(
-        "solidity_variable_declaration",
-        "solidity_unchecked_statement",
-        "solidity_assembly_statement",
-        "solidity_raw_statement",
-        "controls_if"
-      ),
+      contents: [
+        block("solidity_assignment_statement", {
+          TARGET: shadow("solidity_identifier", { NAME: "value" }),
+          VALUE: shadow("math_number", { NUM: "0" }),
+        }),
+        block("solidity_variable_declaration", {
+          INITIAL_VALUE: shadow("math_number", { NUM: "0" }),
+        }),
+        ...blocks(
+          "solidity_emit_statement",
+          "solidity_require_statement",
+          "solidity_revert_statement",
+          "solidity_expression_statement",
+          "solidity_return_statement",
+          "solidity_delete_statement",
+          "controls_if",
+          "solidity_while_statement",
+          "solidity_for_statement",
+          "solidity_loop_control",
+          "solidity_unchecked_statement"
+        ),
+      ],
     },
     {
       kind: "category",
-      name: "Expressions",
+      name: "Values & expressions",
       colour: "#ff9800",
       contents: blocks(
-        "solidity_raw_expression",
+        "solidity_identifier",
+        "solidity_environment",
+        "solidity_string_literal",
+        "solidity_member_access",
+        "solidity_index_access",
+        "solidity_call_expression",
         "logic_compare",
         "logic_boolean",
         "logic_operation",
@@ -74,7 +99,20 @@ export const toolbox: ToolboxDefinition = {
     },
     {
       kind: "category",
-      name: "Legacy quick contract",
+      name: "Advanced / raw Solidity",
+      colour: "#795548",
+      contents: blocks(
+        "solidity_raw_statement",
+        "solidity_raw_expression",
+        "solidity_raw_member",
+        "solidity_raw_top_level",
+        "solidity_raw_source",
+        "solidity_assembly_statement"
+      ),
+    },
+    {
+      kind: "category",
+      name: "Classic templates",
       colour: "#607d8b",
       contents: blocks(
         "contract",
