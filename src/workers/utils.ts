@@ -6,14 +6,25 @@ export const compileWithWorker = async (data: {
     const worker = new Worker("./SolcJs.worker.ts", {
       type: "module",
     });
-    worker.postMessage(data);
-    worker.onmessage = function (event: any) {
+    const timeout = window.setTimeout(() => {
       worker.terminate();
-      resolve(event.data);
+      reject(new Error("Solidity compiler worker timed out"));
+    }, 60000);
+
+    worker.onmessage = function (event: any) {
+      window.clearTimeout(timeout);
+      worker.terminate();
+      if (event.data?.type === "error") {
+        reject(new Error(event.data.error));
+        return;
+      }
+      resolve(event.data.result);
     };
     worker.onerror = (error) => {
+      window.clearTimeout(timeout);
       worker.terminate();
       reject(error);
     };
+    worker.postMessage(data);
   });
 };

@@ -16,7 +16,7 @@ const Compiler = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   const [code, setCode] = useState(StorageContract);
-  const [compiledContract, setCompiledContract] = useState<string>();
+  const [compiledContract, setCompiledContract] = useState("");
   const [isAlertVisible, setAlertVisibility] = useState(true);
 
   const [compilingContract, setCompilingContract] = useState(false);
@@ -35,7 +35,7 @@ const Compiler = () => {
         });
       });
       if (hasErrors) {
-        setCompiledContract(undefined);
+        setCompiledContract("");
         return;
       }
 
@@ -131,6 +131,7 @@ const Compiler = () => {
           <textarea
             placeholder="Compile o código para ver o resultado"
             value={compiledContract}
+            readOnly
             style={{ flex: 1, padding: 10 }}
           ></textarea>
         </Box>
