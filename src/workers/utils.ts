@@ -8,8 +8,12 @@ export const compileWithWorker = async (data: {
     });
     worker.postMessage(data);
     worker.onmessage = function (event: any) {
+      worker.terminate();
       resolve(event.data);
     };
-    worker.onerror = reject;
+    worker.onerror = (error) => {
+      worker.terminate();
+      reject(error);
+    };
   });
 };

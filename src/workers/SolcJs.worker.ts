@@ -3,7 +3,7 @@ import * as wrapper from "solc/wrapper";
 const ctx: Worker = self as any;
 
 importScripts(
-  "https://solc-bin.ethereum.org/bin/soljson-v0.8.6+commit.11564f7e.js"
+  "https://binaries.soliditylang.org/bin/soljson-v0.8.37+commit.f401782d.js"
 );
 
 ctx.addEventListener("message", ({ data }) => {

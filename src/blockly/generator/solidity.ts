@@ -7,8 +7,10 @@ import "./math";
 import "./methods";
 import "./variables";
 import "./procedures";
+import "./modern";
 
 import "../blocks/contract";
+import "../blocks/solidity";
 
 export enum OperationOrder {
   ORDER_ATOMIC = 0, // 0 "" ...
@@ -17,6 +19,7 @@ export enum OperationOrder {
   ORDER_FUNCTION_CALL = 2, // ()
   ORDER_INCREMENT = 3, // ++
   ORDER_DECREMENT = 3, // --
+  ORDER_EXPONENTIATION = 4, // **
   ORDER_BITWISE_NOT = 4.1, // ~
   ORDER_UNARY_PLUS = 4.2, // +
   ORDER_UNARY_NEGATION = 4.3, // -

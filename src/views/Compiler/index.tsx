@@ -10,6 +10,7 @@ import { useSnackbar } from "notistack";
 import StorageContract from "../../contracts/Storage.sol";
 import { useDeployContract } from "../../hooks/useDeployContract";
 import { compileWithWorker } from "../../workers/utils";
+import { parseCompilationResult } from "../../solidity/compiler";
 
 const Compiler = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -25,23 +26,30 @@ const Compiler = () => {
 
   const compileCode = async () => {
     setCompilingContract(true);
-    const result = await compileWithWorker({
-      content: code,
-    });
-
-    setCompilingContract(false);
-    const parsedResult = JSON.parse(result);
-    if (parsedResult.errors) {
-      parsedResult.errors.forEach((error) => {
-        enqueueSnackbar(error.message, { variant: error.severity });
+    try {
+      const result = await compileWithWorker({ content: code });
+      const { diagnostics, hasErrors } = parseCompilationResult(result);
+      diagnostics.forEach((error) => {
+        enqueueSnackbar(error.message, {
+          variant: error.severity === "error" ? "error" : "warning",
+        });
       });
-      return;
-    }
+      if (hasErrors) {
+        setCompiledContract(undefined);
+        return;
+      }
 
-    setCompiledContract(result);
-    enqueueSnackbar("O contrato foi compilado com sucesso", {
-      variant: "success",
-    });
+      setCompiledContract(result);
+      enqueueSnackbar("O contrato foi compilado com sucesso", {
+        variant: "success",
+      });
+    } catch (error) {
+      enqueueSnackbar(`Falha ao executar o compilador: ${error}`, {
+        variant: "error",
+      });
+    } finally {
+      setCompilingContract(false);
+    }
   };
 
   const deployContract = async () => {
