@@ -1,17 +1,21 @@
 /* eslint-disable no-restricted-globals */
 import * as wrapper from "solc/wrapper";
+// eslint-disable-next-line import/no-webpack-loader-syntax
+import soljsonUrl from "file-loader!solc/soljson.js";
 const ctx: Worker = self as any;
 
-importScripts(
-  "https://solc-bin.ethereum.org/bin/soljson-v0.8.6+commit.11564f7e.js"
-);
+importScripts(soljsonUrl);
+const solc = wrapper((ctx as any).Module);
 
 ctx.addEventListener("message", ({ data }) => {
-  const solc = wrapper((ctx as any).Module);
-  const compileResult = solc.compile(
-    createCompileInput(data.contractFileName, data.content)
-  );
-  ctx.postMessage(compileResult);
+  try {
+    const compileResult = solc.compile(
+      createCompileInput(data.contractFileName, data.content)
+    );
+    ctx.postMessage({ type: "result", result: compileResult });
+  } catch (error) {
+    ctx.postMessage({ type: "error", error: String(error) });
+  }
 });
 
 function createCompileInput(

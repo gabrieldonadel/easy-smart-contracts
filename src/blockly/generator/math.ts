@@ -5,7 +5,7 @@ import { OperationOrder } from "./solidity";
 
 BlocklySolidityGenerator["math_number"] = function (block: Block) {
   // Numeric value.
-  var code = parseFloat(block.getFieldValue("NUM"));
+  var code = String(block.getFieldValue("NUM"));
   return [code, OperationOrder.ORDER_ATOMIC];
 };
 
@@ -16,7 +16,7 @@ BlocklySolidityGenerator["math_arithmetic"] = function (block: Block) {
     MINUS: [" - ", OperationOrder.ORDER_SUBTRACTION],
     MULTIPLY: [" * ", OperationOrder.ORDER_MULTIPLICATION],
     DIVIDE: [" / ", OperationOrder.ORDER_DIVISION],
-    POWER: [null, OperationOrder.ORDER_COMMA], // Handle power separately.
+    POWER: [" ** ", OperationOrder.ORDER_EXPONENTIATION],
   };
   var tuple = OPERATORS[block.getFieldValue("OP")];
   var operator = tuple[0];
@@ -26,11 +26,6 @@ BlocklySolidityGenerator["math_arithmetic"] = function (block: Block) {
   var argument1 =
     BlocklySolidityGenerator.valueToCode(block, "B", order) || "0";
   var code;
-  // Power in Solidity requires a special case since it has no operator.
-  if (!operator) {
-    code = "Math.pow(" + argument0 + ", " + argument1 + ")";
-    return [code, OperationOrder.ORDER_FUNCTION_CALL];
-  }
   code = argument0 + operator + argument1;
   return [code, order];
 };

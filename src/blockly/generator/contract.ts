@@ -7,7 +7,7 @@ BlocklySolidityGenerator["contract"] = function (block) {
   var methods = BlocklySolidityGenerator.statementToCode(block, "METHODS");
   var code =
     "// SPDX-License-Identifier: MIT\n" + // Add different licenses support
-    "pragma solidity ^0.8.6;\n\n" +
+    "pragma solidity ^0.8.20;\n\n" +
     "contract " +
     block.getFieldValue("NAME") +
     " {\n" +

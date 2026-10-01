@@ -17,18 +17,10 @@ BlocklySolidityGenerator["contract_method"] = function (block) {
 };
 
 BlocklySolidityGenerator["contract_ctor"] = function (block) {
-  var parent = block.getSurroundParent();
-
-  if (!parent) {
-    return "";
-  }
-
   var params = BlocklySolidityGenerator.statementToCode(block, "PARAMS").trim();
   var branch = BlocklySolidityGenerator.statementToCode(block, "STACK");
   var code =
-    "function " +
-    parent.getFieldValue("NAME") +
-    "(" +
+    "constructor(" +
     params +
     ") {\n" +
     branch +
@@ -69,7 +61,7 @@ BlocklySolidityGenerator["contract_intrinsic_sha3"] = function (block) {
       OperationOrder.ORDER_ASSIGNMENT
     ) || "0";
 
-  return ["sha3(" + argument0 + ")", OperationOrder.ORDER_ATOMIC];
+  return ["keccak256(abi.encodePacked(" + argument0 + "))", OperationOrder.ORDER_ATOMIC];
 };
 
 BlocklySolidityGenerator["contract_method_call"] = function (block) {
